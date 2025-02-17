@@ -18,18 +18,28 @@ const PORT = process.env.APP_PORT || 4000;
 connectDB();
 
 //CORS setup
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+const adminPanelUrl = process.env.ADMIN_PANEL_URL || "http://localhost:5174";
 
-const corsOptions = {
-   origin: allowedOrigins,
-   methods: "GET,POST,PUT,DELETE",
-   allowedHeaders: ["Content-Type", "Authorization"],
-   credentials: true,
-};
+const allowedOrigins = [
+   frontendUrl,
+   adminPanelUrl
+];
+
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
+app.use(cors({
+   origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+         callback(null, true);
+      } else {
+         callback(new Error("Not allowed by CORS"));
+      }
+   },
+   methods: "GET,POST,PUT,DELETE",
+   credentials: true
+}));
 
 // Serve static files from the "upload" folder
 const __dirname = path.resolve();

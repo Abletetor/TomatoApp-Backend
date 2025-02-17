@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Place Order
 const placeOrder = async (req, res) => {
-   const frontendUrl = process.env.FRONTEND_URL;
+   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
    try {
       // Save order details in the database
       const newOrder = new orderModel({
